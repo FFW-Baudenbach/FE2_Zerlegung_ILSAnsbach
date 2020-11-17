@@ -1,8 +1,11 @@
 package de.alamos.fe2.external.impl;
 
-import java.util.*;
-
 import de.alamos.fe2.external.interfaces.IAlarmExtractor;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Implementierung für Stichworterkennung und Füllung weiterer Parameter für die Zerlegungslogik von Alamos FE2.
@@ -18,24 +21,29 @@ public class ILSAnsbach implements IAlarmExtractor {
 	 */
 	@Override
 	public Map<String, String> extract(String input) {
-		input = Objects.requireNonNullElse (input, "");
 		Map<String, String> result = new HashMap<>();
+		try {
+			if (input == null)
+				throw new IllegalArgumentException("Input is null");
 
-		// First make some general cleanup
-		var cleanedInput = cleanInput(input);
+			// First make some general cleanup
+			var cleanedInput = cleanInput(input);
 
-		// Split by keyword
-		var divided = divideByKeywords(cleanedInput);
-		result.putAll(divided);
+			// Split by keyword
+			var divided = divideByKeywords(cleanedInput);
+			result.putAll(divided);
 
-		// Extract address parameters (street, house, city)
-		var address = extractAddress(result.get(Parameter.EINSATZORT.getKey()));
-		result.putAll(address);
+			// Extract address parameters (street, house, city)
+			var address = extractAddress(result.get(Parameter.EINSATZORT.getKey()));
+			result.putAll(address);
 
-		// Extract vehicles
-		var vehicles = extractVehicles(result.get(Parameter.EINSATZMITTEL.getKey()));
-		result.put(Parameter.VEHICLES.getKey(), vehicles);
-
+			// Extract vehicles
+			var vehicles = extractVehicles(result.get(Parameter.EINSATZMITTEL.getKey()));
+			result.put(Parameter.VEHICLES.getKey(), vehicles);
+		}
+		catch (RuntimeException e) {
+			result.put(Parameter.ZERLEGUNG_LOG.getKey(), e.getMessage());
+		}
 		return result;
 	}
 

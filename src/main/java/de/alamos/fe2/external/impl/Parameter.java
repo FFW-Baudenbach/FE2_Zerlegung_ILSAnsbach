@@ -27,7 +27,8 @@ public enum Parameter {
     BEMERKUNG("bemerkung"),
     EINSATZGRUNG("einsatzgrund"),
     EINSATZMITTEL("einsatzmittel"),
-    EINSATZORT("einsatzort");
+    EINSATZORT("einsatzort"),
+    ZERLEGUNG_LOG("zerlegung_log");
 
     private String key;
 
