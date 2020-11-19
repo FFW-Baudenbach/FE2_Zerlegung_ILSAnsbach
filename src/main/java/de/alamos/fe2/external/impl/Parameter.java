@@ -21,18 +21,18 @@ public enum Parameter {
     LAT(EAlarmDataEntries.LAT.getKey()),
     LNG(EAlarmDataEntries.LNG.getKey()),
     DESTINATION(EAlarmDataEntries.DESTINATION.getKey()),
-    VEHICLES("vehicles"),
+    VEHICLES("vehicles"), // should be part of enum
 
     //Now custom ones
-    BEMERKUNG("bemerkung"),
-    EINSATZGRUNG("einsatzgrund"),
-    EINSATZMITTEL("einsatzmittel"),
-    EINSATZORT("einsatzort"),
-    ZERLEGUNG_LOG("zerlegung_log");
+    BEMERKUNG("custom_bemerkung"),
+    EINSATZGRUNG("custom_einsatzgrund"),
+    EINSATZMITTEL("custom_einsatzmittel"),
+    EINSATZORT("custom_einsatzort"),
+    ZERLEGUNG_LOG("custom_zerlegung_log");
 
-    private String key;
+    private final String key;
 
-    private Parameter(String key) {
+    Parameter(String key) {
         this.key = key;
     }
 

@@ -2,6 +2,8 @@ package de.alamos.fe2.external.impl;
 
 import de.alamos.fe2.external.interfaces.IAlarmExtractor;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +22,7 @@ public class ILSAnsbach implements IAlarmExtractor {
 	 * @return Map von Parametern mit Werten.
 	 */
 	@Override
-	public Map<String, String> extract(String input) {
+	public Map<String, String> extract(final String input) {
 		Map<String, String> result = new HashMap<>();
 		try {
 			if (input == null)
@@ -31,13 +33,13 @@ public class ILSAnsbach implements IAlarmExtractor {
 			}
 
 			// First make some general cleanup
-			var cleanedInput = cleanInput(input);
+			var cleanedInput = applyGlobalReplacements(input);
 
 			// Split by keyword
 			var divided = divideByKeywords(cleanedInput);
 			result.putAll(divided);
 
-			// Extract address parameters (street, house, city)
+			// Extract address parameters (street, house, postalCode, city)
 			var address = extractAddress(result.get(Parameter.EINSATZORT.getKey()));
 			result.putAll(address);
 
@@ -46,12 +48,16 @@ public class ILSAnsbach implements IAlarmExtractor {
 			result.put(Parameter.VEHICLES.getKey(), vehicles);
 		}
 		catch (RuntimeException e) {
-			result.put(Parameter.ZERLEGUNG_LOG.getKey(), e.getMessage());
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			e.printStackTrace(pw);
+
+			result.put(Parameter.ZERLEGUNG_LOG.getKey(), sw.toString());
 		}
 		return result;
 	}
 
-	private String cleanInput(final String input) {
+	private String applyGlobalReplacements(final String input) {
 
 		String result = input;
 
@@ -75,14 +81,6 @@ public class ILSAnsbach implements IAlarmExtractor {
 
 	private Map<String, String> divideByKeywords(final String input) {
 
-		//TODO: Stichwortzerlegung
-		/*
-		EINSATZORT;ZIELORT <oder> EINSATZGRUND;einsatzort
-		EINSATZGRUND;EINSATZMITTEL;einsatzgrund
-		EINSATZMITTEL;BEMERKUNG;einsatzmittel
-		BEMERKUNG;ENDE FAX;bemerkung
-		 */
-
 		int idxEinsatzOrt = input.indexOf("EINSATZORT");
 		int idxZielOrt = input.indexOf("ZIELORT");
 		int idxEinsatzGrund = input.indexOf("EINSATZGRUND");
@@ -90,7 +88,7 @@ public class ILSAnsbach implements IAlarmExtractor {
 		int idxBemerkung = input.indexOf("BEMERKUNG");
 		int idxEndeFax = input.indexOf("ENDE FAX");
 
-		// Sometimes Zielort not part of Fax, take Einsatzgrund then
+		// Sometimes 'Zielort' not part of Fax, take 'Einsatzgrund' then
 		if (idxZielOrt == -1) {
 			idxZielOrt = idxEinsatzGrund;
 		}
@@ -100,7 +98,7 @@ public class ILSAnsbach implements IAlarmExtractor {
 		String einsatzmittel = input.substring(idxEinsatzMittel, idxBemerkung);
 		String bemerkung = input.substring(idxBemerkung, idxEndeFax);
 
-		// Clean the field
+		// Clean the field form any surroundings
 		bemerkung = bemerkung.substring(9).replaceAll("(-)+", " ").trim();
 
 		return Map.of(
@@ -112,7 +110,7 @@ public class ILSAnsbach implements IAlarmExtractor {
 
 	private Map<String, String> extractAddress(String input) {
 
-		// TODO Find case insensitive
+		// Was cleaned previously
 		int idxStrasse = input.indexOf("Straße:");
 		int idxHausNr = input.indexOf("Haus-Nr.:");
 		int idxOrt = input.indexOf("Ort:");
@@ -142,7 +140,7 @@ public class ILSAnsbach implements IAlarmExtractor {
 
 		List<String> vehicles = new ArrayList<>();
 
-		// TODO First simple solution - ignore other stuff, just care about our vehicles
+		// Simplest approach: Just parse for our vehicles
 		if (input.contains("FL BAUD 11/1"))
 			vehicles.add("FL BAUD 11/1");
 		if (input.contains("FL BAUD 42/1"))
