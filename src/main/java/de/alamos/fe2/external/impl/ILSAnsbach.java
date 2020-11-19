@@ -10,7 +10,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Implementierung für Stichworterkennung und Füllung weiterer Parameter für die Zerlegungslogik von Alamos FE2.
+ * Implementierung für Stichworterkennung und Füllung weiterer Parameter für die
+ * Zerlegungslogik von Alamos FE2.
+ * Spezialisiert auf Fax der ILS Ansbach, sowie einige Spezialitäten von der FFW Baudenbach.
  */
 public class ILSAnsbach implements IAlarmExtractor {
 
@@ -23,14 +25,15 @@ public class ILSAnsbach implements IAlarmExtractor {
 	 */
 	@Override
 	public Map<String, String> extract(final String input) {
+
 		Map<String, String> result = new HashMap<>();
 		try {
 			if (input == null)
 				throw new IllegalArgumentException("Input is null");
 
-			if (!input.contains("ILS Ansbach")) {
+			if (!input.contains("ILS Ansbach"))
 				throw new IllegalStateException("Seems not to be an alarm fax");
-			}
+
 
 			// First make some general cleanup
 			var cleanedInput = applyGlobalReplacements(input);
