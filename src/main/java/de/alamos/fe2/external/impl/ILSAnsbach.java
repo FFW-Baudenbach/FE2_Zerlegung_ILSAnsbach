@@ -26,6 +26,10 @@ public class ILSAnsbach implements IAlarmExtractor {
 			if (input == null)
 				throw new IllegalArgumentException("Input is null");
 
+			if (!input.contains("ILS Ansbach")) {
+				throw new IllegalStateException("Seems not to be an alarm fax");
+			}
+
 			// First make some general cleanup
 			var cleanedInput = cleanInput(input);
 
@@ -49,25 +53,55 @@ public class ILSAnsbach implements IAlarmExtractor {
 
 	private String cleanInput(final String input) {
 
-		//TODO: General regex
+		String result = input;
 
-		return input;
+		// Fix common ocr mistakes
+		result = result.replaceAll("-+", "-");
+		result = result.replaceAll("\\s+", " ");
+		result = result.replaceAll("=", ":");
+		result = result.replaceAll("#8", "#B"); // Happens on
+		result = result.replaceAll("(?i)StraBe", "Straße");
+		result = result.replaceAll("(?i)0rt", "Ort");
+		result = result.replaceAll("(?i)0bjekt", "Objekt");
+
+		// Special handling address: Many whitespaces, harmonize to be able to extract later on better
+		result = result.replaceAll("Straße\\s*:\\s*", "Straße:");
+		result = result.replaceAll("Haus-Nr\\.\\s*:\\s*", "Haus-Nr.:");
+		result = result.replaceAll("Ort\\s*:\\s*", "Ort:");
+		result = result.replaceAll("Objekt\\s*:\\s*", "Objekt:");
+
+		return result;
 	}
 
 	private Map<String, String> divideByKeywords(final String input) {
 
 		//TODO: Stichwortzerlegung
 		/*
-		EINSATZORT;ZIELORT;einsatzort
+		EINSATZORT;ZIELORT <oder> EINSATZGRUND;einsatzort
 		EINSATZGRUND;EINSATZMITTEL;einsatzgrund
 		EINSATZMITTEL;BEMERKUNG;einsatzmittel
 		BEMERKUNG;ENDE FAX;bemerkung
 		 */
 
-		String einsatzort = "";
-		String einsatzgrund = "";
-		String einsatzmittel = "";
-		String bemerkung = "";
+		int idxEinsatzOrt = input.indexOf("EINSATZORT");
+		int idxZielOrt = input.indexOf("ZIELORT");
+		int idxEinsatzGrund = input.indexOf("EINSATZGRUND");
+		int idxEinsatzMittel = input.indexOf("EINSATZMITTEL");
+		int idxBemerkung = input.indexOf("BEMERKUNG");
+		int idxEndeFax = input.indexOf("ENDE FAX");
+
+		// Sometimes Zielort not part of Fax, take Einsatzgrund then
+		if (idxZielOrt == -1) {
+			idxZielOrt = idxEinsatzGrund;
+		}
+
+		String einsatzort = input.substring(idxEinsatzOrt, idxZielOrt);
+		String einsatzgrund = input.substring(idxEinsatzGrund, idxEinsatzMittel);
+		String einsatzmittel = input.substring(idxEinsatzMittel, idxBemerkung);
+		String bemerkung = input.substring(idxBemerkung, idxEndeFax);
+
+		// Clean the field
+		bemerkung = bemerkung.substring(9).replaceAll("(-)+", " ").trim();
 
 		return Map.of(
 				Parameter.EINSATZORT.getKey(), einsatzort,
@@ -78,23 +112,43 @@ public class ILSAnsbach implements IAlarmExtractor {
 
 	private Map<String, String> extractAddress(String input) {
 
-		//TODO: Address
+		// TODO Find case insensitive
+		int idxStrasse = input.indexOf("Straße:");
+		int idxHausNr = input.indexOf("Haus-Nr.:");
+		int idxOrt = input.indexOf("Ort:");
+		int idxObjekt = input.indexOf("Objekt:");
 
-		String street = "";
-		String house = "";
-		String city = "";
+		String street = input.substring(idxStrasse + 7, idxHausNr);
+		String house = input.substring(idxHausNr + 9, idxOrt);
+		String city = input.substring(idxOrt + 4, idxObjekt);
+
+		// Avoid double mentioning of city
+		if (city.contains(" - ")) {
+			city = city.substring(0, city.indexOf(" - "));
+		}
+
+		// Extract postal and if there remove from city parameter
+		String postal = city.replaceAll("\\D+","");
+		city = city.replaceAll(postal, "");
 
 		return Map.of(
-				Parameter.STREET.getKey(), street,
-				Parameter.HOUSE.getKey(), house,
-				Parameter.CITY.getKey(), city);
+				Parameter.STREET.getKey(), street.trim(),
+				Parameter.HOUSE.getKey(), house.trim(),
+				Parameter.POSTALCODE.getKey(), postal.trim(),
+				Parameter.CITY.getKey(), city.trim());
 	}
 
 	private String extractVehicles(final String input) {
 
 		List<String> vehicles = new ArrayList<>();
 
-		// TODO Extract vehicles
+		// TODO First simple solution - ignore other stuff, just care about our vehicles
+		if (input.contains("FL BAUD 11/1"))
+			vehicles.add("FL BAUD 11/1");
+		if (input.contains("FL BAUD 42/1"))
+			vehicles.add("FL BAUD 42/1");
+		if (input.contains("FL BAUD 49/1"))
+			vehicles.add("FL BAUD 49/1");
 
 		return String.join(System.lineSeparator(), vehicles);
 	}

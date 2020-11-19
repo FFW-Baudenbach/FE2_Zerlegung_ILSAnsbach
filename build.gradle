@@ -1,6 +1,5 @@
 apply plugin: 'idea'
 apply plugin: 'java'
-apply plugin: 'maven-publish'
 
 // Needs to match to FE2 shipped JRE.
 sourceCompatibility = JavaVersion.VERSION_11
@@ -19,24 +18,3 @@ test {
     useJUnitPlatform()
 }
 
-publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId = 'de.alamos.fe2.external.impl'
-            artifactId = 'ilsansbach'
-            version = '1.0'
-
-            from components.java
-        }
-    }
-    repositories {
-      maven {
-        name = "GitHubPackages"
-        url = "https://maven.pkg.github.com/odin568/FE2_Zerlegung_ILSAnsbach"
-        credentials {
-          username = System.getenv("GITHUB_ACTOR")
-          password = System.getenv("GITHUB_TOKEN")
-        }
-      }
-    }
-}

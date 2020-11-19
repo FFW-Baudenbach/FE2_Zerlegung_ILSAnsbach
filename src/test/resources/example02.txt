@@ -1,0 +1,38 @@
+david.
+------------------------ Alarmfax der ILS Ansbach ------------------------
+Absender : ILS ANSBACH
+Fax :  Rufnummer:
+Termin :
+Einsatznummer:
+------------------------------ EINSATZORT ------------------------------
+Straße : Teststraße Haus-Nr.: 42
+Ort : 91460 Baudenbach
+Objekt :
+Plannummer:
+Station :
+Koordinate: X: 0123456 Y: 9876543
+------------------------------ EINSATZGRUND ----------------------------
+Schlagw.: #B1012#im Freien#FreifläChe klein (< 100 m2)
+Stichwort B: B 1
+Stichwort R:
+Stichwort S:
+Stichwort T:
+Prio. : l
+(1 : Notfall / 2 : dringend / 3 : nicht zeitkritisch)
+------------------------------ EINSATZMITTEL ----------------------------
+Einsatzmittel : 5.1.3 NEA FF Baudenbach
+Alarmiert : 07.11.2020 15:11:54
+Geforderte Ausstattung :
+Einsatzmittel : 5.1.3 FL BAUD 42/1
+Alarmiert : 07.11.2020 15:11:55
+Geforderte Ausstattung :
+Einsatzmittel : 5.1.3 FL BAUD 11/1
+Alarmiert : 07.11.2020 15:11:55
+Geforderte Ausstattung :
+------------------------------ BEMERKUNG -------------------------------
+Beispieltext
+------------------------------ ENDE FAX -------------------------------
+Zur Übernahme eines Einsatzes Kontakt mit der ILS aufnehmen!
+Das Alarmfax darf nur zum internen Dienstgebrauch verwendet werden.
+Der Empfänger hat sicherzustellen, dass unbefugte bzw. nicht beteiligte
+Dritte keinen Zugang zu den übermittelten Daten haben - ILS Ansbach -
