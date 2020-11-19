@@ -20,6 +20,15 @@ test {
 }
 
 publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'de.alamos.fe2.external.impl'
+            artifactId = 'ILSAnsbach'
+            version = '1.0'
+
+            from components.java
+        }
+    }
     repositories {
       maven {
         name = "GitHubPackages"
