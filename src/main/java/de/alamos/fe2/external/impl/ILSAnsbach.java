@@ -123,6 +123,9 @@ public class ILSAnsbach implements IAlarmExtractor {
 		String house = input.substring(idxHausNr + 9, idxOrt);
 		String city = input.substring(idxOrt + 4, idxObjekt);
 
+		// Sometimes street contains '> Musterhausen'
+		street = street.replaceAll("^\\s*>\\s*", "Richtung ");
+
 		// Avoid double mentioning of city
 		if (city.contains(" - ")) {
 			city = city.substring(0, city.indexOf(" - "));
