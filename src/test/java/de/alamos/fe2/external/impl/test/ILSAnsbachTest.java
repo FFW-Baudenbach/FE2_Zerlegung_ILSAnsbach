@@ -27,12 +27,12 @@ public class ILSAnsbachTest {
 	}
 
 	@Test
-	public void test_example1() throws IOException {
+	public void test_example01() throws IOException {
 		String example1 = new String(getClass().getClassLoader().getResourceAsStream("example01.txt").readAllBytes());
 		ILSAnsbach impl = new ILSAnsbach();
 		Map<String, String> map = impl.extract(example1);
 		Assertions.assertNotNull(map);
-		Assertions.assertEquals(9, map.size());
+		Assertions.assertEquals(10, map.size());
 
 		// Einsatzort
 		Assertions.assertEquals("Teststraße", map.get(Parameter.STREET.getKey()));
@@ -48,6 +48,14 @@ public class ILSAnsbachTest {
 		Assertions.assertTrue(map.get(Parameter.EINSATZMITTEL.getKey()).contains("FL BAUD 11/1"));
 		Assertions.assertTrue(map.get(Parameter.EINSATZMITTEL.getKey()).contains("FL BAUD 42/1"));
 		Assertions.assertEquals("FL BAUD 11/1\nFL BAUD 42/1", map.get(Parameter.VEHICLES.getKey()));
+
+		String expVehAlTxt =
+				"FL BAUD 42/1\n" +
+				"FL BAUD 11/1 (Ex-Warngerät)\n" +
+				"FL NEA-L 100/99 (KBM Mustermann)\n" +
+				"NEA FF NEA-L K42 Abschnitt XYZ\n" +
+				"FL STG 48/1 (Pressluftatmer [Gerät + Maske])";
+		Assertions.assertEquals(expVehAlTxt, map.get(Parameter.VEHICLES_ALARMTEXT.getKey()));
 
 		// Bemerkung
 		Assertions.assertEquals("Beispieltext", map.get(Parameter.BEMERKUNG.getKey()));

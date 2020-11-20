@@ -34,21 +34,20 @@ public class ILSAnsbach implements IAlarmExtractor {
 			if (!input.contains("ILS Ansbach"))
 				throw new IllegalStateException("Seems not to be an alarm fax");
 
-
-			// First make some general cleanup
+			// "Globale Ersetzung"
 			var cleanedInput = applyGlobalReplacements(input);
 
-			// Split by keyword
+			// "Textzerlegung"
 			var divided = divideByKeywords(cleanedInput);
 			result.putAll(divided);
 
-			// Extract address parameters (street, house, postalCode, city)
+			// "Adresserkennung" (street, house, postalCode, city)
 			var address = extractAddress(result.get(Parameter.EINSATZORT.getKey()));
 			result.putAll(address);
 
-			// Extract vehicles
+			// "Fahrzeugerkennung" (sadly no automatic feature of FE2, so do it in here)
 			var vehicles = extractVehicles(result.get(Parameter.EINSATZMITTEL.getKey()));
-			result.put(Parameter.VEHICLES.getKey(), vehicles);
+			result.putAll(vehicles);
 		}
 		catch (RuntimeException e) {
 			StringWriter sw = new StringWriter();
@@ -68,10 +67,11 @@ public class ILSAnsbach implements IAlarmExtractor {
 		result = result.replaceAll("-+", "-");
 		result = result.replaceAll("\\s+", " ");
 		result = result.replaceAll("=", ":");
-		result = result.replaceAll("#8", "#B"); // Happens on
+		result = result.replaceAll("#8", "#B"); // Happens on keyword
 		result = result.replaceAll("(?i)StraBe", "Straße");
 		result = result.replaceAll("(?i)0rt", "Ort");
 		result = result.replaceAll("(?i)0bjekt", "Objekt");
+		result = result.replaceAll("lnfo", "Info");
 
 		// Special handling address: Many whitespaces, harmonize to be able to extract later on better
 		result = result.replaceAll("Straße\\s*:\\s*", "Straße:");
@@ -139,19 +139,63 @@ public class ILSAnsbach implements IAlarmExtractor {
 				Parameter.CITY.getKey(), city.trim());
 	}
 
-	private String extractVehicles(final String input) {
+	private Map<String, String> extractVehicles(final String input) {
 
+		var resultMap = new HashMap<String, String>(2);
+
+		// The vehicles parameter needs to pass the vehicle names in order to be recognized by AM4 and aMobile Pro
 		List<String> vehicles = new ArrayList<>();
-
-		// Simplest approach: Just parse for our vehicles
 		if (input.contains("FL BAUD 11/1"))
 			vehicles.add("FL BAUD 11/1");
 		if (input.contains("FL BAUD 42/1"))
 			vehicles.add("FL BAUD 42/1");
 		if (input.contains("FL BAUD 49/1"))
 			vehicles.add("FL BAUD 49/1");
+		resultMap.put(Parameter.VEHICLES.getKey(), String.join(System.lineSeparator(), vehicles));
 
-		return String.join(System.lineSeparator(), vehicles);
+		// In addition, parse each and every Einsatzmittel for alarmtext
+
+		// Clean beginning and end first, then split
+		String cleanedInput = input.replaceAll("^EINSATZMITTEL\\s*-*\\s*", "");
+		cleanedInput = cleanedInput.replaceAll("\\s*-*\\s*$", "");
+		String[] einsatzmittel = cleanedInput.split("Einsatzmittel\\s*:\\s*", 0);
+
+		String vehiclesAlarmtext = "";
+		// 5.1.3 NEA FF Baudenbach Alarmiert : 07.11.2020 15:11:54 Geforderte Ausstattung :
+		for (String e : einsatzmittel) {
+			// Ignore empty elements
+			if (e == null || e.length() == 0) {
+				continue;
+			}
+
+			// Replace dotted prefix
+			e = e.replaceAll("^[\\d\\.\\s]*", "");
+
+			// Extract Einheit and Ausstattung
+			String einheit = e.substring(0, e.indexOf("Alarmiert")).trim();
+			String ausstattung = e.substring(e.lastIndexOf(":") + 1).trim();
+
+			// We are not interested in Infoalarm, nor in ourselves as this is clear
+			if (einheit.contains("Infoalarm") || einheit.equals("NEA FF Baudenbach")) {
+				continue;
+			}
+
+			// Too much prosa
+			if (ausstattung.matches("Sonderausrüstung KB\\w")) {
+				ausstattung = "";
+			}
+
+			// Ignore too short things
+			if (ausstattung.length() > 3) {
+				einheit += " (" + ausstattung + ")";
+			}
+
+			vehiclesAlarmtext += einheit + System.lineSeparator();
+		}
+
+		resultMap.put(Parameter.VEHICLES_ALARMTEXT.getKey(), vehiclesAlarmtext.trim());
+
+		return resultMap;
 	}
 
 }

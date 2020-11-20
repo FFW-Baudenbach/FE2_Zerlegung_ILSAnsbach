@@ -28,7 +28,19 @@ Alarmiert : 07.11.2020 15:11:55
 Geforderte Ausstattung :
 Einsatzmittel : 5.1.3 FL BAUD 11/1
 Alarmiert : 07.11.2020 15:11:55
+Geforderte Ausstattung : Ex-Warngerät
+Einsatzmittel : 5.1.3 FL NEA-L 100/99 (KBM Mustermann)
+Alarmiert : 08.07.2020 14:06:16
+Geforderte Ausstattung : Sonderausrüstung KBM
+Einsatzmittel : 5.1.3 lnfoalarm FW-Fuhrung NEA
+Alarmiert : 08.07.2020 14:06:16
+Geforderte Ausstattung : Sonderausrüstung Infoalarm
+Einsatzmittel : 5.1.3 NEA FF NEA-L K42 Abschnitt XYZ
+Alarmiert : 08.07.2020 14:06:16
 Geforderte Ausstattung :
+Einsatzmittel = 5.1.3 FL STG 48/1
+Alarmiert = 25.01.2020 06:25
+Geforderte Ausstattung = Pressluftatmer [Gerät + Maske]
 ------------------------------ BEMERKUNG -------------------------------
 Beispieltext
 ------------------------------ ENDE FAX -------------------------------
