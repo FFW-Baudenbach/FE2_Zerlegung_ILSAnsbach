@@ -53,7 +53,6 @@ public class ILSAnsbachTest {
 				"FL BAUD 42/1\n" +
 				"FL BAUD 11/1 (Ex-Warngerät)\n" +
 				"FL NEA-L 100/99 (KBM Mustermann)\n" +
-				"NEA FF NEA-L K42 Abschnitt XYZ\n" +
 				"FL STG 48/1 (Pressluftatmer [Gerät + Maske])";
 		Assertions.assertEquals(expVehAlTxt, map.get(Parameter.VEHICLES_ALARMTEXT.getKey()));
 

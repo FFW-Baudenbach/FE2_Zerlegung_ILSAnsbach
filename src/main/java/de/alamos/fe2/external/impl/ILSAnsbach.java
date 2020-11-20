@@ -143,7 +143,8 @@ public class ILSAnsbach implements IAlarmExtractor {
 
 		var resultMap = new HashMap<String, String>(2);
 
-		// The vehicles parameter needs to pass the vehicle names in order to be recognized by AM4 and aMobile Pro
+		// The vehicles parameter needs to pass the vehicle names
+		// in order to be recognized by AM4 and aMobile Pro
 		List<String> vehicles = new ArrayList<>();
 		if (input.contains("FL BAUD 11/1"))
 			vehicles.add("FL BAUD 11/1");
@@ -153,30 +154,36 @@ public class ILSAnsbach implements IAlarmExtractor {
 			vehicles.add("FL BAUD 49/1");
 		resultMap.put(Parameter.VEHICLES.getKey(), String.join(System.lineSeparator(), vehicles));
 
-		// In addition, parse each and every Einsatzmittel for alarmtext
+		//-----------------------------------------------------------------------------
+		// In addition, parse each and every Einsatzmittel for alarmtext plugin
 
 		// Clean beginning and end first, then split
 		String cleanedInput = input.replaceAll("^EINSATZMITTEL\\s*-*\\s*", "");
 		cleanedInput = cleanedInput.replaceAll("\\s*-*\\s*$", "");
 		String[] einsatzmittel = cleanedInput.split("Einsatzmittel\\s*:\\s*", 0);
 
-		String vehiclesAlarmtext = "";
+		List<String> vehiclesAlarmText = new ArrayList<>();
 		// 5.1.3 NEA FF Baudenbach Alarmiert : 07.11.2020 15:11:54 Geforderte Ausstattung :
-		for (String e : einsatzmittel) {
+		for (String em : einsatzmittel) {
 			// Ignore empty elements
-			if (e == null || e.length() == 0) {
+			if (em == null || em.length() == 0) {
 				continue;
 			}
 
 			// Replace dotted prefix
-			e = e.replaceAll("^[\\d\\.\\s]*", "");
+			em = em.replaceAll("^[\\d\\.\\s]*", "");
 
 			// Extract Einheit and Ausstattung
-			String einheit = e.substring(0, e.indexOf("Alarmiert")).trim();
-			String ausstattung = e.substring(e.lastIndexOf(":") + 1).trim();
+			String einheit = em.substring(0, em.indexOf("Alarmiert")).trim();
+			String ausstattung = em.substring(em.lastIndexOf(":") + 1).trim();
 
 			// We are not interested in Infoalarm, nor in ourselves as this is clear
 			if (einheit.contains("Infoalarm") || einheit.equals("NEA FF Baudenbach")) {
+				continue;
+			}
+
+			// Also some KBx Alarms not relevant
+			if (einheit.contains("NEA-L") && einheit.contains("Abschnitt")) {
 				continue;
 			}
 
@@ -190,10 +197,10 @@ public class ILSAnsbach implements IAlarmExtractor {
 				einheit += " (" + ausstattung + ")";
 			}
 
-			vehiclesAlarmtext += einheit + System.lineSeparator();
+			vehiclesAlarmText.add(einheit);
 		}
 
-		resultMap.put(Parameter.VEHICLES_ALARMTEXT.getKey(), vehiclesAlarmtext.trim());
+		resultMap.put(Parameter.VEHICLES_ALARMTEXT.getKey(), String.join(System.lineSeparator(), vehiclesAlarmText));
 
 		return resultMap;
 	}
