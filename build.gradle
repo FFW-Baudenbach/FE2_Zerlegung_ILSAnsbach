@@ -18,3 +18,9 @@ test {
     useJUnitPlatform()
 }
 
+task copyJar(type: Copy) {
+    from jar
+    into '.'
+}
+
+build.dependsOn copyJar
