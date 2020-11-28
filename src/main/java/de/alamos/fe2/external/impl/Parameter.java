@@ -17,7 +17,7 @@ public enum Parameter {
 
     //Now custom ones
     BEMERKUNG("custom_bemerkung"),
-    EINSATZGRUNG("custom_einsatzgrund"),
+    EINSATZGRUND("custom_einsatzgrund"),
     EINSATZMITTEL("custom_einsatzmittel"),
     EINSATZORT("custom_einsatzort"),
     ZERLEGUNG_LOG("custom_zerlegung_log"),

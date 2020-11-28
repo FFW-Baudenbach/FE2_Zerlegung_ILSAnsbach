@@ -42,7 +42,7 @@ public class ILSAnsbachTest {
 		Assertions.assertTrue(map.get(Parameter.EINSATZORT.getKey()).contains("X: 0123456 Y: 9876543"));
 
 		// Einsatzgrund
-		Assertions.assertTrue(map.get(Parameter.EINSATZGRUNG.getKey()).contains("B1012"));
+		Assertions.assertTrue(map.get(Parameter.EINSATZGRUND.getKey()).contains("B1012"));
 
 		// Einsatzmittel
 		Assertions.assertTrue(map.get(Parameter.EINSATZMITTEL.getKey()).contains("FL BAUD 11/1"));

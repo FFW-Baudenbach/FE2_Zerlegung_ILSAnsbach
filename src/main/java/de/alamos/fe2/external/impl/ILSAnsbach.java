@@ -106,7 +106,7 @@ public class ILSAnsbach implements IAlarmExtractor {
 
 		return Map.of(
 				Parameter.EINSATZORT.getKey(), einsatzort,
-				Parameter.EINSATZGRUNG.getKey(), einsatzgrund,
+				Parameter.EINSATZGRUND.getKey(), einsatzgrund,
 				Parameter.EINSATZMITTEL.getKey(), einsatzmittel,
 				Parameter.BEMERKUNG.getKey(), bemerkung);
 	}
