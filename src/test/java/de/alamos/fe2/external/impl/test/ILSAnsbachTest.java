@@ -47,12 +47,12 @@ public class ILSAnsbachTest {
 		// Einsatzmittel
 		Assertions.assertTrue(map.get(Parameter.EINSATZMITTEL.getKey()).contains("FL BAUD 11/1"));
 		Assertions.assertTrue(map.get(Parameter.EINSATZMITTEL.getKey()).contains("FL BAUD 42/1"));
-		Assertions.assertEquals("FL BAUD 11/1\nFL BAUD 42/1", map.get(Parameter.VEHICLES.getKey()));
+		Assertions.assertEquals("FL BAUD 11/1" + System.lineSeparator() + "FL BAUD 42/1", map.get(Parameter.VEHICLES.getKey()));
 
 		String expVehAlTxt =
-				"FL BAUD 42/1\n" +
-				"FL BAUD 11/1 (Ex-Warngerät)\n" +
-				"FL NEA-L 100/99 (KBM Mustermann)\n" +
+				"FL BAUD 42/1" + System.lineSeparator() +
+				"FL BAUD 11/1 (Ex-Warngerät)" + System.lineSeparator() +
+				"FL NEA-L 100/99 (KBM Mustermann)" + System.lineSeparator() +
 				"FL STG 48/1 (Pressluftatmer [Gerät + Maske])";
 		Assertions.assertEquals(expVehAlTxt, map.get(Parameter.VEHICLES_ALARMTEXT.getKey()));
 
