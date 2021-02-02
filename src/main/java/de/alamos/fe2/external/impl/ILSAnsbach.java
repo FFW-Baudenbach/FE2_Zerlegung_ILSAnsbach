@@ -2,11 +2,12 @@ package de.alamos.fe2.external.impl;
 
 import de.alamos.fe2.external.interfaces.IAlarmExtractor;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Implementierung für Stichworterkennung und Füllung weiterer Parameter für die
@@ -27,8 +28,6 @@ public class ILSAnsbach implements IAlarmExtractor {
 
 		Map<String, String> result = new HashMap<>();
 		try {
-			result.put(Parameter.ZERLEGUNG_VERSION.getKey(), getImplVersion());
-
 			if (input == null)
 				throw new IllegalArgumentException("Input is null");
 
@@ -58,17 +57,6 @@ public class ILSAnsbach implements IAlarmExtractor {
 			result.put(Parameter.ZERLEGUNG_LOG.getKey(), sw.toString());
 		}
 		return result;
-	}
-
-	private String getImplVersion() {
-		try (InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream("info.properties")) {
-			Properties prop = new Properties();
-			prop.load(is);
-			return prop.getProperty("version");
-		}
-		catch (IOException io) {
-			return "UNKNOWN";
-		}
 	}
 
 	private String applyGlobalReplacements(final String input) {

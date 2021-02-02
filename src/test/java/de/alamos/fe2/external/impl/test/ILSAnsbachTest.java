@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
 
 public class ILSAnsbachTest {
 
@@ -15,7 +16,7 @@ public class ILSAnsbachTest {
 		ILSAnsbach impl = new ILSAnsbach();
 		Map<String, String> map = impl.extract("");
 		Assertions.assertNotNull(map);
-		Assertions.assertEquals(2, map.size());
+		Assertions.assertEquals(1, map.size());
 	}
 
 	@Test
@@ -23,26 +24,16 @@ public class ILSAnsbachTest {
 		ILSAnsbach impl = new ILSAnsbach();
 		Map<String, String> map = impl.extract(null);
 		Assertions.assertNotNull(map);
-		Assertions.assertEquals(2, map.size());
-	}
-
-	@Test
-	public void extract_versionPresent() {
-		ILSAnsbach impl = new ILSAnsbach();
-		Map<String, String> map = impl.extract("Something");
-		Assertions.assertNotNull(map);
-		Assertions.assertEquals(2, map.size());
-		Assertions.assertTrue(map.containsKey(Parameter.ZERLEGUNG_VERSION.getKey()));
-		Assertions.assertEquals(5, Integer.parseInt(map.get(Parameter.ZERLEGUNG_VERSION.getKey())));
+		Assertions.assertEquals(1, map.size());
 	}
 
 	@Test
 	public void test_example01() throws IOException {
-		String example1 = new String(getClass().getClassLoader().getResourceAsStream("example01.txt").readAllBytes());
+		String example1 = new String(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("example01.txt")).readAllBytes());
 		ILSAnsbach impl = new ILSAnsbach();
 		Map<String, String> map = impl.extract(example1);
 		Assertions.assertNotNull(map);
-		Assertions.assertEquals(11, map.size());
+		Assertions.assertEquals(10, map.size());
 
 		// Einsatzort
 		Assertions.assertEquals("Teststraße", map.get(Parameter.STREET.getKey()));
