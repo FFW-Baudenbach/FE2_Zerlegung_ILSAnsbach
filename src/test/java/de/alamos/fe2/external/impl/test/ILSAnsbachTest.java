@@ -33,7 +33,7 @@ public class ILSAnsbachTest {
 		Assertions.assertNotNull(map);
 		Assertions.assertEquals(2, map.size());
 		Assertions.assertTrue(map.containsKey(Parameter.ZERLEGUNG_VERSION.getKey()));
-		Assertions.assertTrue(Integer.parseInt(map.get(Parameter.ZERLEGUNG_VERSION.getKey())) > 0);
+		Assertions.assertEquals(5, Integer.parseInt(map.get(Parameter.ZERLEGUNG_VERSION.getKey())));
 	}
 
 	@Test
