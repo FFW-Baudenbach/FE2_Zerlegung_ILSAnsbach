@@ -21,6 +21,7 @@ public enum Parameter {
     EINSATZMITTEL("custom_einsatzmittel"),
     EINSATZORT("custom_einsatzort"),
     VEHICLES_ALARMTEXT("custom_vehicles_alarmtext"),
+    VEHICLES_ALARMTEXT_HTML("custom_vehicles_alarmtext_html"),
     ZERLEGUNG_LOG("custom_zerlegung_log");
 
     private final String key;

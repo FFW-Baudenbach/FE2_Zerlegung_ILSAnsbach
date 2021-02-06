@@ -1,13 +1,11 @@
 package de.alamos.fe2.external.impl;
 
 import de.alamos.fe2.external.interfaces.IAlarmExtractor;
+import org.apache.commons.text.StringEscapeUtils;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Implementierung für Stichworterkennung und Füllung weiterer Parameter für die
@@ -165,7 +163,7 @@ public class ILSAnsbach implements IAlarmExtractor {
 		cleanedInput = cleanedInput.replaceAll("\\s*-*\\s*$", "");
 		String[] einsatzmittel = cleanedInput.split("Einsatzmittel\\s*:\\s*", 0);
 
-		List<String> vehiclesAlarmText = new ArrayList<>();
+		List<String> allVehicles = new ArrayList<>();
 		// 5.1.3 NEA FF Baudenbach Alarmiert : 07.11.2020 15:11:54 Geforderte Ausstattung :
 		for (String em : einsatzmittel) {
 			// Ignore empty elements
@@ -200,12 +198,34 @@ public class ILSAnsbach implements IAlarmExtractor {
 				einheit += " (" + ausstattung + ")";
 			}
 
-			vehiclesAlarmText.add(einheit);
+			allVehicles.add(einheit);
 		}
 
-		resultMap.put(Parameter.VEHICLES_ALARMTEXT.getKey(), String.join(System.lineSeparator(), vehiclesAlarmText));
+		resultMap.put(Parameter.VEHICLES_ALARMTEXT.getKey(), String.join(System.lineSeparator(), allVehicles));
+		resultMap.put(Parameter.VEHICLES_ALARMTEXT_HTML.getKey(), generateVehiclesAsHtml(allVehicles));
 
 		return resultMap;
+	}
+
+	private String generateVehiclesAsHtml(List<String> vehicles)
+	{
+		StringBuilder builder = new StringBuilder();
+		builder.append("<ul>");
+		for (String vehicle : vehicles) {
+			builder.append("<li>");
+			if (vehicle.contains("FL BAUD")) {
+				builder.append("<strong>");
+				builder.append(StringEscapeUtils.escapeHtml4(vehicle));
+				builder.append("</strong>");
+			}
+			else {
+				builder.append(StringEscapeUtils.escapeHtml4(vehicle));
+			}
+			builder.append("</li>");
+		}
+		builder.append("</ul>");
+
+		return builder.toString();
 	}
 
 }

@@ -33,7 +33,7 @@ public class ILSAnsbachTest {
 		ILSAnsbach impl = new ILSAnsbach();
 		Map<String, String> map = impl.extract(example1);
 		Assertions.assertNotNull(map);
-		Assertions.assertEquals(10, map.size());
+		Assertions.assertEquals(11, map.size());
 
 		// Einsatzort
 		Assertions.assertEquals("Teststraße", map.get(Parameter.STREET.getKey()));
@@ -56,6 +56,9 @@ public class ILSAnsbachTest {
 				"FL NEA-L 100/99 (KBM Mustermann)" + System.lineSeparator() +
 				"FL STG 48/1 (Pressluftatmer [Gerät + Maske])";
 		Assertions.assertEquals(expVehAlTxt, map.get(Parameter.VEHICLES_ALARMTEXT.getKey()));
+
+		String expVehAlTxtHtml = "<ul><li><strong>FL BAUD 42/1</strong></li><li><strong>FL BAUD 11/1 (Ex-Warnger&auml;t)</strong></li><li>FL NEA-L 100/99 (KBM Mustermann)</li><li>FL STG 48/1 (Pressluftatmer [Ger&auml;t + Maske])</li></ul>";
+		Assertions.assertEquals(expVehAlTxtHtml, map.get(Parameter.VEHICLES_ALARMTEXT_HTML.getKey()));
 
 		// Bemerkung
 		Assertions.assertEquals("Beispieltext", map.get(Parameter.BEMERKUNG.getKey()));
