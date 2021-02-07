@@ -1,11 +1,13 @@
 package de.alamos.fe2.external.impl;
 
 import de.alamos.fe2.external.interfaces.IAlarmExtractor;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Implementierung für Stichworterkennung und Füllung weiterer Parameter für die
@@ -13,6 +15,8 @@ import java.util.*;
  * Spezialisiert auf Fax der ILS Ansbach, sowie einige Spezialitäten von der FFW Baudenbach.
  */
 public class ILSAnsbach implements IAlarmExtractor {
+
+	private final String[] _knownVehicles = {"FL BAUD 11/1", "FL BAUD 42/1", "FL BAUD 49/1"};
 
 	/**
 	 * Zerlegt den Textinput von der Texterkennung und extrahiert
@@ -26,29 +30,29 @@ public class ILSAnsbach implements IAlarmExtractor {
 
 		Map<String, String> result = new HashMap<>();
 		try {
-			if (input == null)
-				throw new IllegalArgumentException("Input is null");
+			if (StringUtils.isBlank(input))
+				throw new IllegalArgumentException("Not valid input passed");
 
 			if (!input.contains("ILS Ansbach"))
 				throw new IllegalStateException("Seems not to be an alarm fax");
 
-			// "Globale Ersetzung"
+			// Equivalent to "Globale Ersetzung"
 			var cleanedInput = applyGlobalReplacements(input);
 
-			// "Textzerlegung"
+			// Equivalent to "Stichwortzerlegung"
 			var divided = divideByKeywords(cleanedInput);
 			result.putAll(divided);
 
-			// "Adresserkennung" (street, house, postalCode, city)
+			// "Adresserkennung" (no equivalent in FE2, coordinates are still handled by FE2)
 			var address = extractAddress(result.get(Parameter.EINSATZORT.getKey()));
 			result.putAll(address);
 
-			// "Fahrzeugerkennung" (sadly no automatic feature of FE2, so do it in here)
+			// "Fahrzeugerkennung" (no equivalent in FE2)
 			var vehicles = extractVehicles(result.get(Parameter.EINSATZMITTEL.getKey()));
 			result.putAll(vehicles);
 		}
 		catch (RuntimeException e) {
-			// In case of an unhandled Exception, write it to parameter for tracablility
+			// In case of an unhandled Exception, write it to parameter for traceability
 			StringWriter sw = new StringWriter();
 			PrintWriter pw = new PrintWriter(sw);
 			e.printStackTrace(pw);
@@ -57,6 +61,14 @@ public class ILSAnsbach implements IAlarmExtractor {
 		return result;
 	}
 
+	/**
+	 * Diese Methode ist angelehnt an die Globale Ersetzungslogik von FE2.
+	 * Sinn und Zweck ist es, typische OCR Fehler zu beheben und generell bspw. Leerzeichen zu reduzieren
+	 * um im späteren Verlauf auf einem definierten Text arbeiten zu können.
+	 *
+	 * @param input der Eingabetext
+	 * @return bearbeiteter Text
+	 */
 	private String applyGlobalReplacements(final String input) {
 
 		String result = input;
@@ -71,7 +83,7 @@ public class ILSAnsbach implements IAlarmExtractor {
 		result = result.replaceAll("(?i)0bjekt", "Objekt");
 		result = result.replaceAll("lnfo", "Info");
 
-		// Special handling address: Many whitespaces, harmonize to be able to extract later on better
+		// Special handling address: Many whitespaces, harmonize to be able to extract later on easier
 		result = result.replaceAll("Straße\\s*:\\s*", "Straße:");
 		result = result.replaceAll("Haus-Nr\\.\\s*:\\s*", "Haus-Nr.:");
 		result = result.replaceAll("Ort\\s*:\\s*", "Ort:");
@@ -80,6 +92,14 @@ public class ILSAnsbach implements IAlarmExtractor {
 		return result;
 	}
 
+	/**
+	 * Diese Methode ist angelehnt an die Stichwortzerlegung in FE2.
+	 * Ziel ist es das Alarmfax in einzelne Abschnitte zu unterteilen.
+	 * Die einzelnen Teile werden direkt mit dem FE2 Parameter verknüpft
+	 *
+	 * @param input der Eingabetext
+	 * @return eine Map von Parametern mit dem entsprechenden Teil des Eingabetextes
+	 */
 	private Map<String, String> divideByKeywords(final String input) {
 
 		int idxEinsatzOrt = input.indexOf("EINSATZORT");
@@ -109,6 +129,13 @@ public class ILSAnsbach implements IAlarmExtractor {
 				Parameter.BEMERKUNG.getKey(), bemerkung);
 	}
 
+	/**
+	 * Diese Methode behandelt den Einsatzort-Block des Alarmtextes.
+	 * Es wird versucht, so viele Informationen wie möglich aus dem Fax zu extrahieren, bspw. Ort, PLZ, ...
+	 *
+	 * @param input der Eingabetext
+	 * @return eine Map mit allen gefundenen Parametern mit den entsprechenden Werten
+	 */
 	private Map<String, String> extractAddress(String input) {
 
 		// Was cleaned previously
@@ -136,23 +163,25 @@ public class ILSAnsbach implements IAlarmExtractor {
 		return Map.of(
 				Parameter.STREET.getKey(), street.trim(),
 				Parameter.HOUSE.getKey(), house.trim(),
-				Parameter.POSTALCODE.getKey(), postal.trim(),
+				Parameter.POSTCODE.getKey(), postal.trim(),
 				Parameter.CITY.getKey(), city.trim());
 	}
 
+	/**
+	 * Diese Methode behandelt den Einsatzmittel-Block des Alarmfaxes.
+	 * Es werden verschiedene Parameter gesetzt, die dann später im Alarmablauf verwendet werden können.
+	 *
+	 * @param input der Eingabetext
+	 * @return eine Map mit allen gefundenen Parametern mit den entsprechenden Werten
+	 */
 	private Map<String, String> extractVehicles(final String input) {
 
 		var resultMap = new HashMap<String, String>(2);
 
 		// The vehicles parameter needs to pass the vehicle names
-		// in order to be recognized by AM4 and aMobile Pro
-		List<String> vehicles = new ArrayList<>();
-		if (input.contains("FL BAUD 11/1"))
-			vehicles.add("FL BAUD 11/1");
-		if (input.contains("FL BAUD 42/1"))
-			vehicles.add("FL BAUD 42/1");
-		if (input.contains("FL BAUD 49/1"))
-			vehicles.add("FL BAUD 49/1");
+		// in order to be recognized by AM4 and aMobile Pro.
+		// Look in text for any occurrence of the vehicle key.
+		List<String> vehicles = Arrays.stream(_knownVehicles).filter(input::contains).collect(Collectors.toList());
 		resultMap.put(Parameter.VEHICLES.getKey(), String.join(System.lineSeparator(), vehicles));
 
 		//-----------------------------------------------------------------------------
@@ -161,65 +190,73 @@ public class ILSAnsbach implements IAlarmExtractor {
 		// Clean beginning and end first, then split
 		String cleanedInput = input.replaceAll("^EINSATZMITTEL\\s*-*\\s*", "");
 		cleanedInput = cleanedInput.replaceAll("\\s*-*\\s*$", "");
-		String[] einsatzmittel = cleanedInput.split("Einsatzmittel\\s*:\\s*", 0);
+		String[] resources = cleanedInput.split("Einsatzmittel\\s*:\\s*", 0);
 
-		List<String> allVehicles = new ArrayList<>();
+		List<String> allResources = new ArrayList<>();
 		// 5.1.3 NEA FF Baudenbach Alarmiert : 07.11.2020 15:11:54 Geforderte Ausstattung :
-		for (String em : einsatzmittel) {
+		for (String resource : resources) {
 			// Ignore empty elements
-			if (em == null || em.length() == 0) {
+			if (StringUtils.isBlank(resource)) {
 				continue;
 			}
 
 			// Replace dotted prefix
-			em = em.replaceAll("^[\\d\\.\\s]*", "");
+			resource = resource.replaceAll("^[\\d\\.\\s]*", "");
 
 			// Extract Einheit and Ausstattung
-			String einheit = em.substring(0, em.indexOf("Alarmiert")).trim();
-			String ausstattung = em.substring(em.lastIndexOf(":") + 1).trim();
+			String unit = resource.substring(0, resource.indexOf("Alarmiert")).trim();
+			String facilities = resource.substring(resource.lastIndexOf(":") + 1).trim();
 
 			// We are not interested in Infoalarm, nor in ourselves as this is clear
-			if (einheit.contains("Infoalarm") || einheit.equals("NEA FF Baudenbach")) {
+			if (unit.contains("Infoalarm") || unit.equals("NEA FF Baudenbach")) {
 				continue;
 			}
 
 			// Also some KBx Alarms not relevant
-			if (einheit.contains("NEA-L") && einheit.contains("Abschnitt")) {
+			if (unit.contains("NEA-L") && unit.contains("Abschnitt")) {
 				continue;
 			}
 
 			// Too much prosa
-			if (ausstattung.matches("Sonderausrüstung KB\\w")) {
-				ausstattung = "";
+			if (facilities.matches("Sonderausrüstung KB\\w")) {
+				facilities = "";
 			}
 
 			// Ignore too short things
-			if (ausstattung.length() > 3) {
-				einheit += " (" + ausstattung + ")";
+			if (facilities.length() > 3) {
+				unit += " (" + facilities + ")";
 			}
 
-			allVehicles.add(einheit);
+			allResources.add(unit);
 		}
 
-		resultMap.put(Parameter.VEHICLES_ALARMTEXT.getKey(), String.join(System.lineSeparator(), allVehicles));
-		resultMap.put(Parameter.VEHICLES_ALARMTEXT_HTML.getKey(), generateVehiclesAsHtml(allVehicles));
+		resultMap.put(Parameter.EINSATZMITTEL_LISTE.getKey(), String.join(System.lineSeparator(), allResources));
+		resultMap.put(Parameter.EINSATZMITTEL_HTML.getKey(), generateResourcesAsHtml(allResources));
 
 		return resultMap;
 	}
 
-	private String generateVehiclesAsHtml(List<String> vehicles)
+	/**
+	 * Diese Hilfsmethode baut aus der Liste von bereits aufbereiteten Einsatzmitteln
+	 * einen HTML-Formatierten Text, der bspw. für den Mail-Versand später benutzt werden kann.
+	 * Es wird als Stichpunktliste formatiert. Eigene Einheiten werden hervorgehoben.
+	 *
+	 * @param resources Liste von Einsatzmitteln
+	 * @return Einsatzmittel mit
+	 */
+	private String generateResourcesAsHtml(List<String> resources)
 	{
 		StringBuilder builder = new StringBuilder();
 		builder.append("<ul>");
-		for (String vehicle : vehicles) {
+		for (String resource : resources) {
 			builder.append("<li>");
-			if (vehicle.contains("FL BAUD")) {
+			if (Arrays.stream(_knownVehicles).anyMatch(resource::contains)) {
 				builder.append("<strong>");
-				builder.append(StringEscapeUtils.escapeHtml4(vehicle));
+				builder.append(StringEscapeUtils.escapeHtml4(resource));
 				builder.append("</strong>");
 			}
 			else {
-				builder.append(StringEscapeUtils.escapeHtml4(vehicle));
+				builder.append(StringEscapeUtils.escapeHtml4(resource));
 			}
 			builder.append("</li>");
 		}

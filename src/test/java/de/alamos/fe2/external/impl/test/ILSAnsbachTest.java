@@ -38,7 +38,7 @@ public class ILSAnsbachTest {
 		// Einsatzort
 		Assertions.assertEquals("Teststraße", map.get(Parameter.STREET.getKey()));
 		Assertions.assertEquals("42", map.get(Parameter.HOUSE.getKey()));
-		Assertions.assertEquals("91460", map.get(Parameter.POSTALCODE.getKey()));
+		Assertions.assertEquals("91460", map.get(Parameter.POSTCODE.getKey()));
 		Assertions.assertEquals("Baudenbach", map.get(Parameter.CITY.getKey()));
 		Assertions.assertTrue(map.get(Parameter.EINSATZORT.getKey()).contains("X: 0123456 Y: 9876543"));
 
@@ -55,10 +55,10 @@ public class ILSAnsbachTest {
 				"FL BAUD 11/1 (Ex-Warngerät)" + System.lineSeparator() +
 				"FL NEA-L 100/99 (KBM Mustermann)" + System.lineSeparator() +
 				"FL STG 48/1 (Pressluftatmer [Gerät + Maske])";
-		Assertions.assertEquals(expVehAlTxt, map.get(Parameter.VEHICLES_ALARMTEXT.getKey()));
+		Assertions.assertEquals(expVehAlTxt, map.get(Parameter.EINSATZMITTEL_LISTE.getKey()));
 
 		String expVehAlTxtHtml = "<ul><li><strong>FL BAUD 42/1</strong></li><li><strong>FL BAUD 11/1 (Ex-Warnger&auml;t)</strong></li><li>FL NEA-L 100/99 (KBM Mustermann)</li><li>FL STG 48/1 (Pressluftatmer [Ger&auml;t + Maske])</li></ul>";
-		Assertions.assertEquals(expVehAlTxtHtml, map.get(Parameter.VEHICLES_ALARMTEXT_HTML.getKey()));
+		Assertions.assertEquals(expVehAlTxtHtml, map.get(Parameter.EINSATZMITTEL_HTML.getKey()));
 
 		// Bemerkung
 		Assertions.assertEquals("Beispieltext", map.get(Parameter.BEMERKUNG.getKey()));
