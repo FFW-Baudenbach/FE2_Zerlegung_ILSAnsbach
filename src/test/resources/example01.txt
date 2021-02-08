@@ -43,7 +43,7 @@ Alarmiert = 25.01.2020 06:25
 Geforderte Ausstattung = Pressluftatmer [Gerät + Maske]
 ------------------------------ BEMERKUNG -------------------------------
 Beispieltext
------------------------------- ENDE FAX -------------------------------
+------------------------------ ENDE FAx -------------------------------
 Zur Übernahme eines Einsatzes Kontakt mit der ILS aufnehmen!
 Das Alarmfax darf nur zum internen Dienstgebrauch verwendet werden.
 Der Empfänger hat sicherzustellen, dass unbefugte bzw. nicht beteiligte

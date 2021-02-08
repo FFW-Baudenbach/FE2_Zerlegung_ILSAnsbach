@@ -2,6 +2,7 @@ package de.alamos.fe2.external.impl;
 
 import de.alamos.fe2.external.interfaces.IAlarmExtractor;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.text.StringEscapeUtils;
 
 import java.io.PrintWriter;
@@ -33,8 +34,8 @@ public class ILSAnsbach implements IAlarmExtractor {
 			if (StringUtils.isBlank(input))
 				throw new IllegalArgumentException("Not valid input passed");
 
-			if (!input.contains("ILS Ansbach"))
-				throw new IllegalStateException("Seems not to be an alarm fax");
+			if (!StringUtils.contains(input, "ILS Ansbach"))
+				throw new IllegalStateException("Term 'ILS Ansbach' cannot be found");
 
 			// Equivalent to "Globale Ersetzung"
 			var cleanedInput = applyGlobalReplacements(input);
@@ -53,10 +54,7 @@ public class ILSAnsbach implements IAlarmExtractor {
 		}
 		catch (RuntimeException e) {
 			// In case of an unhandled Exception, write it to parameter for traceability
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			e.printStackTrace(pw);
-			result.put(Parameter.ZERLEGUNG_LOG.getKey(), sw.toString());
+			result.put(Parameter.ZERLEGUNG_LOG.getKey(), ExceptionUtils.getStackTrace(e));
 		}
 		return result;
 	}
@@ -82,6 +80,7 @@ public class ILSAnsbach implements IAlarmExtractor {
 		result = result.replaceAll("(?i)0rt", "Ort");
 		result = result.replaceAll("(?i)0bjekt", "Objekt");
 		result = result.replaceAll("lnfo", "Info");
+		result = result.replaceAll("(?i)ENDE [EF]AX", "ENDE FAX");
 
 		// Special handling address: Many whitespaces, harmonize to be able to extract later on easier
 		result = result.replaceAll("Straße\\s*:\\s*", "Straße:");
@@ -203,7 +202,7 @@ public class ILSAnsbach implements IAlarmExtractor {
 			// Replace dotted prefix
 			resource = resource.replaceAll("^[\\d\\.\\s]*", "");
 
-			// Extract Einheit and Ausstattung
+			// Extract unit (Einheit) and facilities (Ausstattungen)
 			String unit = resource.substring(0, resource.indexOf("Alarmiert")).trim();
 			String facilities = resource.substring(resource.lastIndexOf(":") + 1).trim();
 

@@ -16,13 +16,12 @@ public enum Parameter {
     VEHICLES("vehicles"), // should be part of official enum
 
     // Now custom ones. Prefixed with "custom_" to avoid any side effect with FE2-Parameters.
-    //TODO: Rename Keys
     BEMERKUNG("custom_bemerkung"),
     EINSATZGRUND("custom_einsatzgrund"),
     EINSATZMITTEL("custom_einsatzmittel"),
     EINSATZORT("custom_einsatzort"),
-    EINSATZMITTEL_LISTE("custom_vehicles_alarmtext"),
-    EINSATZMITTEL_HTML("custom_vehicles_alarmtext_html"),
+    EINSATZMITTEL_LISTE("custom_einsatzmittel_liste"),
+    EINSATZMITTEL_HTML("custom_einsatzmittel_html"),
     ZERLEGUNG_LOG("custom_zerlegung_log");
 
     private final String key;

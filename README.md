@@ -10,8 +10,8 @@ Der Code orientiert sich am Ablauf an dem regulären FE2-Ablauf
 * Adresserkennung (extrahiert die Parameter street, house, city, etc.)
 * Fahrzeugerkennung  
 Da dies kein Feature von FE2 im Alarmablauf ist, wird hier der Parameter _vehicles_ gesetzt. Diese Variable muss __exakt__ die Fahrzeugnamen oder -codes in einer eigenen Zeile beinhalten. Das ist schwierig aus dem Fax ohne eigene Logik.  
-Zusätzlich wird auch eine Variable geschrieben, die alle Einsatzmittel, also auch andere alarmierte Feuerwehren enthält und so aufbereitet ist, dass sie direkt im Alarmablauf verwendet werden kann. In einer anderen Variable wird das ganze noch im HTML-Format ausgegeben um es aufbereitet per Mail rausschicken zu können.
-* Für die Stichworterkennung und Addresserkennung aus Koordinaten wird weiterhin die FE2-Funktionalität verwendet.
+Zusätzlich wird auch eine Variable geschrieben, die alle Einsatzmittel, also auch andere alarmierte Feuerwehren enthält und so aufbereitet ist, dass sie direkt im Alarmablauf verwendet werden kann. In einer anderen Variable wird das ganze noch im HTML-Format ausgegeben um es aufbereitet per Mail herausschicken zu können.
+* Für die Stichworterkennung und Adresserkennung aus Koordinaten wird weiterhin die FE2-Funktionalität verwendet.
 * Im Falle einer Exception wird diese nicht an FE2 durchgereicht (keine Ahnung was da passieren würde). Stattdessen wird diese in einen Parameter geschrieben. Ein funktionierender Alarm ist dann eh nicht mehr möglich, aber es lässt sich damit die Ursache leichter erkennen.
 * Stellt sicher, dass mit der korrekten Java Version kompiliert wird
 * Beinhaltet anonymisiertes Alarmfax als UnitTest
