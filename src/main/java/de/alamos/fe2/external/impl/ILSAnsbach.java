@@ -5,8 +5,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.text.StringEscapeUtils;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -41,8 +39,8 @@ public class ILSAnsbach implements IAlarmExtractor {
 			var cleanedInput = applyGlobalReplacements(input);
 
 			// Equivalent to "Stichwortzerlegung"
-			var divided = divideByKeywords(cleanedInput);
-			result.putAll(divided);
+			var keywords = divideByKeywords(cleanedInput);
+			result.putAll(keywords);
 
 			// "Adresserkennung" (no equivalent in FE2, coordinates are still handled by FE2)
 			var address = extractAddress(result.get(Parameter.EINSATZORT.getKey()));
@@ -250,9 +248,9 @@ public class ILSAnsbach implements IAlarmExtractor {
 		for (String resource : resources) {
 			builder.append("<li>");
 			if (Arrays.stream(_knownVehicles).anyMatch(resource::contains)) {
-				builder.append("<strong>");
+				builder.append("<span style=\"color: #5700a3;\"><strong>");
 				builder.append(StringEscapeUtils.escapeHtml4(resource));
-				builder.append("</strong>");
+				builder.append("</strong></span>");
 			}
 			else {
 				builder.append(StringEscapeUtils.escapeHtml4(resource));

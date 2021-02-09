@@ -65,7 +65,7 @@ public class ILSAnsbachTest {
 				"FL STG 48/1 (Pressluftatmer [Gerät + Maske])";
 		Assertions.assertEquals(expVehAlTxt, map.get(Parameter.EINSATZMITTEL_LISTE.getKey()));
 
-		String expVehAlTxtHtml = "<ul><li><strong>FL BAUD 42/1</strong></li><li><strong>FL BAUD 11/1 (Ex-Warnger&auml;t)</strong></li><li>FL NEA-L 100/99 (KBM Mustermann)</li><li>FL STG 48/1 (Pressluftatmer [Ger&auml;t + Maske])</li></ul>";
+		String expVehAlTxtHtml = "<ul><li><span style=\"color: #5700a3;\"><strong>FL BAUD 42/1</strong></span></li><li><span style=\"color: #5700a3;\"><strong>FL BAUD 11/1 (Ex-Warnger&auml;t)</strong></span></li><li>FL NEA-L 100/99 (KBM Mustermann)</li><li>FL STG 48/1 (Pressluftatmer [Ger&auml;t + Maske])</li></ul>";
 		Assertions.assertEquals(expVehAlTxtHtml, map.get(Parameter.EINSATZMITTEL_HTML.getKey()));
 
 		// Bemerkung
