@@ -22,18 +22,12 @@ test {
 
 // ---- UPDATE VERSION
 task updateVersion {
-    def propertyFile = file "src/main/resources/info.properties"
-    def props = new Properties()
-    propertyFile.withReader { props.load(it) }
-    int version = props.getProperty('version') as Integer
-    props.setProperty('version', ++version as String)
-    propertyFile.withWriter { props.store(it, null) }
+    if (System.getenv("RELEASE_VERSION") != null) {
+        def propertyFile = file "src/main/resources/info.properties"
+        def props = new Properties()
+        propertyFile.withReader { props.load(it) }
+        props.setProperty('version', System.getenv("RELEASE_VERSION") as String)
+        propertyFile.withWriter { props.store(it, null) }
+    }
 }
 assemble.dependsOn updateVersion
-
-// ---- UPDATE ARTIFACT
-task copyJar(type: Copy) {
-    from jar
-    into '.'
-}
-build.dependsOn copyJar

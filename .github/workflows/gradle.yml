@@ -4,10 +4,12 @@
 name: Java CI with Gradle
 
 on:
+  create:
+    branches: [ dev, main ]
   push:
-    branches: [ main ]
+    branches: [ dev, main ]
   pull_request:
-    branches: [ main ]
+    branches: [ dev, main ]
 
 jobs:
   build:
@@ -20,6 +22,9 @@ jobs:
           java-version: 1.11
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
+      - name: Generate version
+        if: startsWith(github.ref, 'refs/tags/')
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
       - name: Build with Gradle
         run: ./gradlew build
       - name: Archive production artifacts
@@ -28,3 +33,11 @@ jobs:
           name: jar
           path: |
             build/libs/*.jar
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            build/libs/*.jar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
