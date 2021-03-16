@@ -16,7 +16,9 @@ Zusätzlich wird auch eine Variable geschrieben, die alle Einsatzmittel, also au
 * Stellt sicher, dass mit der korrekten Java Version kompiliert wird
 * Beinhaltet anonymisiertes Alarmfax als UnitTest
 ## Verwendung
-* Lade ![FE2_Zerlegung_ILSAnsbach.jar](/FE2_Zerlegung_ILSAnsbach.jar?raw=true "FE2_Zerlegung_ILSAnsbach.jar") herunter
+* Lade neuestes ![FE2_Zerlegung_ILSAnsbach.jar](https://github.com/odin568/FE2_Zerlegung_ILSAnsbach/releases/) herunter
+* Stoppe FE2
 * Kopiere Datei nach _...\FE2\Config\data\extern_
+* Starte FE2
 * In _FE2 Administration_ kann nun die Zerlegung an der Einheit unter _Einstellungen > Zerlegung_ ausgewählt werden
-* Prüfe, ob die Version mit der letzten Build-Version übereinstimmt (siehe [info.properties](src/main/resources/info.properties))
+* Prüfe, ob die Version korrekt ist
