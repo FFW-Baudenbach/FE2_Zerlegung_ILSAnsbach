@@ -85,6 +85,7 @@ public class ILSAnsbach implements IAlarmExtractor {
 		result = result.replaceAll("Haus-Nr\\.\\s*:\\s*", "Haus-Nr.:");
 		result = result.replaceAll("Ort\\s*:\\s*", "Ort:");
 		result = result.replaceAll("Objekt\\s*:\\s*", "Objekt:");
+		result = result.replaceAll("Plannummer\\s*:\\s*", "Plannummer:");
 
 		return result;
 	}
@@ -140,10 +141,12 @@ public class ILSAnsbach implements IAlarmExtractor {
 		int idxHausNr = input.indexOf("Haus-Nr.:");
 		int idxOrt = input.indexOf("Ort:");
 		int idxObjekt = input.indexOf("Objekt:");
+		int idxPlannummer = input.indexOf("Plannummer:");
 
 		String street = input.substring(idxStrasse + 7, idxHausNr);
 		String house = input.substring(idxHausNr + 9, idxOrt);
 		String city = input.substring(idxOrt + 4, idxObjekt);
+		String objekt = input.substring(idxObjekt + 7, idxPlannummer);
 
 		// Sometimes street contains '> Musterhausen'
 		street = street.replaceAll("^\\s*>\\s*", "Richtung ");
@@ -161,7 +164,8 @@ public class ILSAnsbach implements IAlarmExtractor {
 				Parameter.STREET.getKey(), street.trim(),
 				Parameter.HOUSE.getKey(), house.trim(),
 				Parameter.POSTCODE.getKey(), postal.trim(),
-				Parameter.CITY.getKey(), city.trim());
+				Parameter.CITY.getKey(), city.trim(),
+				Parameter.OBJECT.getKey(), objekt.trim());
 	}
 
 	/**

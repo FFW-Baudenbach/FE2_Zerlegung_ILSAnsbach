@@ -41,13 +41,14 @@ public class ILSAnsbachTest {
 		ILSAnsbach impl = new ILSAnsbach();
 		Map<String, String> map = impl.extract(example1);
 		Assertions.assertNotNull(map);
-		Assertions.assertEquals(11, map.size());
+		Assertions.assertEquals(12, map.size());
 
 		// Einsatzort
 		Assertions.assertEquals("Teststraße", map.get(Parameter.STREET.getKey()));
 		Assertions.assertEquals("42", map.get(Parameter.HOUSE.getKey()));
 		Assertions.assertEquals("91460", map.get(Parameter.POSTCODE.getKey()));
 		Assertions.assertEquals("Baudenbach", map.get(Parameter.CITY.getKey()));
+		Assertions.assertEquals("Testobjekt", map.get(Parameter.OBJECT.getKey()));
 		Assertions.assertTrue(map.get(Parameter.EINSATZORT.getKey()).contains("X: 0123456 Y: 9876543"));
 
 		// Einsatzgrund
