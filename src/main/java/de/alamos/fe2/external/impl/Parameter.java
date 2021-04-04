@@ -22,7 +22,7 @@ public enum Parameter {
     EINSATZORT("custom_einsatzort"),
     EINSATZMITTEL_LISTE("custom_einsatzmittel_liste"),
     EINSATZMITTEL_HTML("custom_einsatzmittel_html"),
-    OBJECT("custom_object"),
+    OBJEKT("custom_objekt"),
     ZERLEGUNG_LOG("custom_zerlegung_log");
 
     private final String key;

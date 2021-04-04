@@ -48,7 +48,7 @@ public class ILSAnsbachTest {
 		Assertions.assertEquals("42", map.get(Parameter.HOUSE.getKey()));
 		Assertions.assertEquals("91460", map.get(Parameter.POSTCODE.getKey()));
 		Assertions.assertEquals("Baudenbach", map.get(Parameter.CITY.getKey()));
-		Assertions.assertEquals("Testobjekt", map.get(Parameter.OBJECT.getKey()));
+		Assertions.assertEquals("Testobjekt", map.get(Parameter.OBJEKT.getKey()));
 		Assertions.assertTrue(map.get(Parameter.EINSATZORT.getKey()).contains("X: 0123456 Y: 9876543"));
 
 		// Einsatzgrund

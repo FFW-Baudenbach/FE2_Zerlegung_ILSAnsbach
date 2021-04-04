@@ -165,7 +165,7 @@ public class ILSAnsbach implements IAlarmExtractor {
 				Parameter.HOUSE.getKey(), house.trim(),
 				Parameter.POSTCODE.getKey(), postal.trim(),
 				Parameter.CITY.getKey(), city.trim(),
-				Parameter.OBJECT.getKey(), objekt.trim());
+				Parameter.OBJEKT.getKey(), objekt.trim());
 	}
 
 	/**
