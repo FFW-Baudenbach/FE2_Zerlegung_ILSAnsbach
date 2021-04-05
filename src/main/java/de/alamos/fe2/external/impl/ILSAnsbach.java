@@ -169,7 +169,7 @@ public class ILSAnsbach implements IAlarmExtractor {
 		formatted += postal.trim() + " " + city.trim();
 
 		return Map.of(
-				Parameter.EINSATZORT_FORMATIERT.getKey(), formatted,
+				Parameter.EINSATZORT_FORMATIERT.getKey(), formatted.trim(),
 				Parameter.STREET.getKey(), street.trim(),
 				Parameter.HOUSE.getKey(), house.trim(),
 				Parameter.POSTCODE.getKey(), postal.trim(),
