@@ -49,6 +49,9 @@ public class ILSAnsbach implements IAlarmExtractor {
 			// "Fahrzeugerkennung" (no equivalent in FE2)
 			var vehicles = extractVehicles(result.get(Parameter.EINSATZMITTEL.getKey()));
 			result.putAll(vehicles);
+
+			// Extract 'Einsatznummer'
+			result.put(Parameter.EINSATZNUMMER.getKey(), extractEinsatznummer(cleanedInput));
 		}
 		catch (RuntimeException e) {
 			// In case of an unhandled Exception, write it to parameter for traceability
@@ -160,7 +163,13 @@ public class ILSAnsbach implements IAlarmExtractor {
 		String postal = city.replaceAll("\\D+","");
 		city = city.replaceAll(postal, "");
 
+		// Generate formatted output
+		String formatted = street.trim() + " " + house.trim() + System.lineSeparator();
+		formatted += StringUtils.isBlank(objekt) ? "" : (objekt.trim() + System.lineSeparator());
+		formatted += postal.trim() + " " + city.trim();
+
 		return Map.of(
+				Parameter.EINSATZORT_FORMATIERT.getKey(), formatted,
 				Parameter.STREET.getKey(), street.trim(),
 				Parameter.HOUSE.getKey(), house.trim(),
 				Parameter.POSTCODE.getKey(), postal.trim(),
@@ -264,6 +273,18 @@ public class ILSAnsbach implements IAlarmExtractor {
 		builder.append("</ul>");
 
 		return builder.toString();
+	}
+
+	/**
+	 * Extract Einsatznummer from input
+	 * @param input
+	 * @return
+	 */
+	private String extractEinsatznummer(String input) {
+		int idxEinsatznummer = input.indexOf("Einsatznummer:");
+		int idxEnd = input.indexOf(" - ", idxEinsatznummer);
+		String einsatznummer = input.substring(idxEinsatznummer + 14, idxEnd);
+		return einsatznummer.trim();
 	}
 
 }
