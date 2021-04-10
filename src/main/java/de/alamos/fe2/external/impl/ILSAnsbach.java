@@ -167,9 +167,11 @@ public class ILSAnsbach implements IAlarmExtractor {
 		String formatted = street.trim() + " " + house.trim() + System.lineSeparator();
 		formatted += StringUtils.isBlank(objekt) ? "" : (objekt.trim() + System.lineSeparator());
 		formatted += postal.trim() + " " + city.trim();
+		String htmlFormatted = formatted.replaceAll(System.lineSeparator(), "<br/>");
 
 		return Map.of(
 				Parameter.EINSATZORT_FORMATIERT.getKey(), formatted.trim(),
+				Parameter.EINSATZORT_FORMATIERT_HTML.getKey(), htmlFormatted.trim(),
 				Parameter.STREET.getKey(), street.trim(),
 				Parameter.HOUSE.getKey(), house.trim(),
 				Parameter.POSTCODE.getKey(), postal.trim(),

@@ -41,7 +41,7 @@ public class ILSAnsbachTest {
 		ILSAnsbach impl = new ILSAnsbach();
 		Map<String, String> map = impl.extract(example1);
 		Assertions.assertNotNull(map);
-		Assertions.assertEquals(14, map.size());
+		Assertions.assertEquals(15, map.size());
 
 		Assertions.assertEquals("B 5.1 201203 4711", map.get(Parameter.EINSATZNUMMER.getKey()));
 
@@ -51,6 +51,7 @@ public class ILSAnsbachTest {
 				"Testobjekt" + System.lineSeparator() +
 				"91460 Baudenbach";
 		Assertions.assertEquals(expFormattedEinsatzort, map.get(Parameter.EINSATZORT_FORMATIERT.getKey()));
+		Assertions.assertEquals("Teststraße 42<br/>Testobjekt<br/>91460 Baudenbach", map.get(Parameter.EINSATZORT_FORMATIERT_HTML.getKey()));
 		Assertions.assertEquals("Teststraße", map.get(Parameter.STREET.getKey()));
 		Assertions.assertEquals("42", map.get(Parameter.HOUSE.getKey()));
 		Assertions.assertEquals("91460", map.get(Parameter.POSTCODE.getKey()));

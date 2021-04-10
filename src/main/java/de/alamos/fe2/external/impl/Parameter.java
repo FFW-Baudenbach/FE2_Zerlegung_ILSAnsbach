@@ -22,6 +22,7 @@ public enum Parameter {
     EINSATZNUMMER("custom_einsatznummer"),
     EINSATZORT("custom_einsatzort"),
     EINSATZORT_FORMATIERT("custom_einsatzort_formatiert"),
+    EINSATZORT_FORMATIERT_HTML("custom_einsatzort_formatiert_html"),
     EINSATZMITTEL_LISTE("custom_einsatzmittel_liste"),
     EINSATZMITTEL_HTML("custom_einsatzmittel_html"),
     OBJEKT("custom_objekt"),
