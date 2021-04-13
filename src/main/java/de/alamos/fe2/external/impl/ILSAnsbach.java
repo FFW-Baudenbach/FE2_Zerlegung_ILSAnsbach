@@ -5,7 +5,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.text.StringEscapeUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -115,13 +119,13 @@ public class ILSAnsbach implements IAlarmExtractor {
 			idxZielOrt = idxEinsatzGrund;
 		}
 
-		String einsatzort = input.substring(idxEinsatzOrt, idxZielOrt);
-		String einsatzgrund = input.substring(idxEinsatzGrund, idxEinsatzMittel);
-		String einsatzmittel = input.substring(idxEinsatzMittel, idxBemerkung);
-		String bemerkung = input.substring(idxBemerkung, idxEndeFax);
+		String einsatzort = StringUtils.substring(input, idxEinsatzOrt, idxZielOrt);
+		String einsatzgrund = StringUtils.substring(input, idxEinsatzGrund, idxEinsatzMittel);
+		String einsatzmittel = StringUtils.substring(input, idxEinsatzMittel, idxBemerkung);
+		String bemerkung = StringUtils.substring(input, idxBemerkung, idxEndeFax);
 
 		// Clean the field form any surroundings
-		bemerkung = bemerkung.substring(9).replaceAll("(-)+", " ").trim();
+		bemerkung = StringUtils.substring(bemerkung, 9).replaceAll("(-)+", " ").trim();
 
 		return Map.of(
 				Parameter.EINSATZORT.getKey(), einsatzort,
@@ -146,17 +150,17 @@ public class ILSAnsbach implements IAlarmExtractor {
 		int idxObjekt = input.indexOf("Objekt:");
 		int idxPlannummer = input.indexOf("Plannummer:");
 
-		String street = input.substring(idxStrasse + 7, idxHausNr);
-		String house = input.substring(idxHausNr + 9, idxOrt);
-		String city = input.substring(idxOrt + 4, idxObjekt);
-		String objekt = input.substring(idxObjekt + 7, idxPlannummer);
+		String street = StringUtils.substring(input, idxStrasse + 7, idxHausNr);
+		String house = StringUtils.substring(input, idxHausNr + 9, idxOrt);
+		String city = StringUtils.substring(input, idxOrt + 4, idxObjekt);
+		String objekt = StringUtils.substring(input, idxObjekt + 7, idxPlannummer);
 
 		// Sometimes street contains '> Musterhausen'
 		street = street.replaceAll("^\\s*>\\s*", "Richtung ");
 
 		// Avoid double mentioning of city
 		if (city.contains(" - ")) {
-			city = city.substring(0, city.indexOf(" - "));
+			city = StringUtils.substring(city, 0, city.indexOf(" - "));
 		}
 
 		// Extract postal and if there remove from city parameter
@@ -213,11 +217,11 @@ public class ILSAnsbach implements IAlarmExtractor {
 			}
 
 			// Replace dotted prefix
-			resource = resource.replaceAll("^[\\d\\.\\s]*", "");
+			resource = resource.replaceAll("^[\\d.\\s]*", "");
 
 			// Extract unit (Einheit) and facilities (Ausstattungen)
-			String unit = resource.substring(0, resource.indexOf("Alarmiert")).trim();
-			String facilities = resource.substring(resource.lastIndexOf(":") + 1).trim();
+			String unit = StringUtils.substring(resource, 0, resource.indexOf("Alarmiert")).trim();
+			String facilities = StringUtils.substring(resource, resource.lastIndexOf(":") + 1).trim();
 
 			// We are not interested in Infoalarm, nor in ourselves as this is clear
 			if (unit.contains("Infoalarm") || unit.equals("NEA FF Baudenbach")) {
@@ -278,15 +282,14 @@ public class ILSAnsbach implements IAlarmExtractor {
 	}
 
 	/**
-	 * Extract Einsatznummer from input
-	 * @param input
-	 * @return
+	 * Extrahiert Einsatznummer aus dem Alarmfax
+	 * @param input Alarmfax
+	 * @return Die Einsatznummer
 	 */
 	private String extractEinsatznummer(String input) {
 		int idxEinsatznummer = input.indexOf("Einsatznummer:");
 		int idxEnd = input.indexOf(" - ", idxEinsatznummer);
-		String einsatznummer = input.substring(idxEinsatznummer + 14, idxEnd);
+		String einsatznummer = StringUtils.substring(input, idxEinsatznummer + 14, idxEnd);
 		return einsatznummer.trim();
 	}
-
 }
