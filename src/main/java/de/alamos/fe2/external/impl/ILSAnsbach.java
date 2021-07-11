@@ -81,11 +81,13 @@ public class ILSAnsbach implements IAlarmExtractor {
 		result = result.replaceAll("\\s+", " ");
 		result = result.replaceAll("=", ":");
 		result = result.replaceAll("#8", "#B"); // Happens on keyword
+		result = result.replaceAll("#1", "#I"); // Happens on keyword
 		result = result.replaceAll("(?i)StraBe", "Straße");
 		result = result.replaceAll("(?i)0rt", "Ort");
 		result = result.replaceAll("(?i)0bjekt", "Objekt");
 		result = result.replaceAll("lnfo", "Info");
 		result = result.replaceAll("(?i)ENDE [EF]AX", "ENDE FAX");
+		result = result.replaceAll("(?i)david(\\.)*", "");
 
 		// Special handling address: Many whitespaces, harmonize to be able to extract later on easier
 		result = result.replaceAll("Straße\\s*:\\s*", "Straße:");
