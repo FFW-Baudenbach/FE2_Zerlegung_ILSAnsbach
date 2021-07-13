@@ -24,7 +24,7 @@ Einsatzmittel : 5.1.3 NEA FF Baudenbach
 Alarmiert : 07.11.2020 15:11:54
 Geforderte Ausstattung :
 Einsatzmittel : 5.1.3 FL BAUD 42/1
-Alarmiert : 07.11.2020 15:11:55
+A1armiert : 07.11.2020 15:11:55
 Geforderte Ausstattung :
 Einsatzmittel : 5.1.3 FL BAUD 11/1
 Alarmiert : 07.11.2020 15:11:55
