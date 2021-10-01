@@ -83,6 +83,7 @@ public class ILSAnsbach implements IAlarmExtractor {
 		result = result.replaceAll("#8", "#B"); // Happens on keyword
 		result = result.replaceAll("#1", "#I"); // Happens on keyword
 		result = result.replaceAll("(?i)StraBe", "Straße");
+		result = result.replaceAll("(?i)Haus-Nr.1", "Haus-Nr.:");
 		result = result.replaceAll("(?i)0rt", "Ort");
 		result = result.replaceAll("(?i)0bjekt", "Objekt");
 		result = result.replaceAll("lnfo", "Info");
