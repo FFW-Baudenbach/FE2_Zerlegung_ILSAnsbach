@@ -204,6 +204,8 @@ public class ILSAnsbach implements IAlarmExtractor {
 		// Look in text for any occurrence of the vehicle key.
 		List<String> vehicles = Arrays.stream(_knownVehicles).filter(input::contains).collect(Collectors.toList());
 		resultMap.put(Parameter.VEHICLES.getKey(), String.join(System.lineSeparator(), vehicles));
+		// Due to bug in fe2 with jaspersoft, copy same content also to custom parameter.
+		resultMap.put(Parameter.EINSATZMITTEL_VEHICLES.getKey(), resultMap.get(Parameter.VEHICLES.getKey()));
 
 		//-----------------------------------------------------------------------------
 		// In addition, parse each and every Einsatzmittel for alarmtext plugin

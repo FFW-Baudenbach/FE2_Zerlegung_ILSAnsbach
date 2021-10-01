@@ -23,6 +23,7 @@ public enum Parameter {
     EINSATZORT("custom_einsatzort"),
     EINSATZORT_FORMATIERT("custom_einsatzort_formatiert"),
     EINSATZORT_FORMATIERT_HTML("custom_einsatzort_formatiert_html"),
+    EINSATZMITTEL_VEHICLES("custom_vehicles"),
     EINSATZMITTEL_LISTE("custom_einsatzmittel_liste"),
     EINSATZMITTEL_HTML("custom_einsatzmittel_html"),
     OBJEKT("custom_objekt"),

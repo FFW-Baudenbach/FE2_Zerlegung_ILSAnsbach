@@ -41,7 +41,7 @@ public class ILSAnsbachTest {
 		ILSAnsbach impl = new ILSAnsbach();
 		Map<String, String> map = impl.extract(example1);
 		Assertions.assertNotNull(map);
-		Assertions.assertEquals(15, map.size());
+		Assertions.assertEquals(16, map.size());
 
 		Assertions.assertEquals("B 5.1 201203 4711", map.get(Parameter.EINSATZNUMMER.getKey()));
 
@@ -67,6 +67,7 @@ public class ILSAnsbachTest {
 		Assertions.assertTrue(map.get(Parameter.EINSATZMITTEL.getKey()).contains("FL BAUD 42/1"));
 		Assertions.assertEquals("FL BAUD 11/1" + System.lineSeparator() + "FL BAUD 42/1", map.get(Parameter.VEHICLES.getKey()));
 
+		Assertions.assertEquals(map.get(Parameter.EINSATZMITTEL_VEHICLES.getKey()), map.get(Parameter.VEHICLES.getKey()));
 		String expVehAlTxt =
 				"FL BAUD 42/1" + System.lineSeparator() +
 				"FL BAUD 11/1 (Ex-Warngerät)" + System.lineSeparator() +
