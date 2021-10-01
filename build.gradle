@@ -4,7 +4,7 @@ apply plugin: 'java'
 // Needs to match to FE2 shipped JRE.
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(11)
+        languageVersion = JavaLanguageVersion.of(16)
     }
 }
 
