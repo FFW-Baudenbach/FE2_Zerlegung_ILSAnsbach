@@ -6,6 +6,7 @@ Termin :
 Einsatznummer: B 5.1 201203 4711
 ------------------------------ EINSATZORT ------------------------------
 Straße : Teststraße Haus-Nr.: 42
+Abschnitt: Testabschnitt
 Ort : 91460 Baudenbach
 Objekt : Testobjekt
 Plannummer:

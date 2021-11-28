@@ -46,12 +46,14 @@ public class ILSAnsbachTest {
 		Assertions.assertEquals("B 5.1 201203 4711", map.get(Parameter.EINSATZNUMMER.getKey()));
 
 		// Einsatzort
-		String expFormattedEinsatzort =
-				"Teststraße 42" + System.lineSeparator() +
-				"Testobjekt" + System.lineSeparator() +
-				"91460 Baudenbach";
+		String expFormattedEinsatzort = """
+				Teststraße 42
+				Testabschnitt
+				Testobjekt
+				91460 Baudenbach
+				""".trim();
 		Assertions.assertEquals(expFormattedEinsatzort, map.get(Parameter.EINSATZORT_FORMATIERT.getKey()));
-		Assertions.assertEquals("Teststraße 42<br/>Testobjekt<br/>91460 Baudenbach", map.get(Parameter.EINSATZORT_FORMATIERT_HTML.getKey()));
+		Assertions.assertEquals("Teststraße 42<br/>Testabschnitt<br/>Testobjekt<br/>91460 Baudenbach", map.get(Parameter.EINSATZORT_FORMATIERT_HTML.getKey()));
 		Assertions.assertEquals("Teststraße", map.get(Parameter.STREET.getKey()));
 		Assertions.assertEquals("42", map.get(Parameter.HOUSE.getKey()));
 		Assertions.assertEquals("91460", map.get(Parameter.POSTCODE.getKey()));
@@ -68,11 +70,13 @@ public class ILSAnsbachTest {
 		Assertions.assertEquals("FL BAUD 11/1" + System.lineSeparator() + "FL BAUD 42/1", map.get(Parameter.VEHICLES.getKey()));
 
 		Assertions.assertEquals(map.get(Parameter.EINSATZMITTEL_VEHICLES.getKey()), map.get(Parameter.VEHICLES.getKey()));
-		String expVehAlTxt =
-				"FL BAUD 42/1" + System.lineSeparator() +
-				"FL BAUD 11/1 (Ex-Warngerät)" + System.lineSeparator() +
-				"FL NEA-L 100/99 (KBM Mustermann)" + System.lineSeparator() +
-				"FL STG 48/1 (Pressluftatmer [Gerät + Maske])";
+
+		String expVehAlTxt = """
+				FL BAUD 42/1
+				FL BAUD 11/1 (Ex-Warngerät)
+				FL NEA-L 100/99 (KBM Mustermann)
+				FL STG 48/1 (Pressluftatmer [Gerät + Maske])
+				""".trim();
 		Assertions.assertEquals(expVehAlTxt, map.get(Parameter.EINSATZMITTEL_LISTE.getKey()));
 
 		String expVehAlTxtHtml = "<ul><li><span style=\"color: #5700a3;\"><strong>FL BAUD 42/1</strong></span></li><li><span style=\"color: #5700a3;\"><strong>FL BAUD 11/1 (Ex-Warnger&auml;t)</strong></span></li><li>FL NEA-L 100/99 (KBM Mustermann)</li><li>FL STG 48/1 (Pressluftatmer [Ger&auml;t + Maske])</li></ul>";

@@ -95,6 +95,7 @@ public class ILSAnsbach implements IAlarmExtractor {
 		// Special handling address: Many whitespaces, harmonize to be able to extract later on easier
 		result = result.replaceAll("Straße\\s*:\\s*", "Straße:");
 		result = result.replaceAll("Haus-Nr\\.\\s*:\\s*", "Haus-Nr.:");
+		result = result.replaceAll("Abschnitt\\s*:\\s*", "Abschnitt:");
 		result = result.replaceAll("Ort\\s*:\\s*", "Ort:");
 		result = result.replaceAll("Objekt\\s*:\\s*", "Objekt:");
 		result = result.replaceAll("Plannummer\\s*:\\s*", "Plannummer:");
@@ -151,12 +152,21 @@ public class ILSAnsbach implements IAlarmExtractor {
 		// Was cleaned previously
 		int idxStrasse = input.indexOf("Straße:");
 		int idxHausNr = input.indexOf("Haus-Nr.:");
+		int idxAbschnitt = input.indexOf("Abschnitt:");
 		int idxOrt = input.indexOf("Ort:");
 		int idxObjekt = input.indexOf("Objekt:");
 		int idxPlannummer = input.indexOf("Plannummer:");
 
 		String street = StringUtils.substring(input, idxStrasse + 7, idxHausNr);
-		String house = StringUtils.substring(input, idxHausNr + 9, idxOrt);
+		String house, abschnitt;
+		if (idxAbschnitt > 0) {
+			house = StringUtils.substring(input, idxHausNr + 9, idxAbschnitt);
+			abschnitt = StringUtils.substring(input, idxAbschnitt + 10, idxOrt);
+		}
+		else {
+			house = StringUtils.substring(input, idxHausNr + 9, idxOrt);
+			abschnitt = "";
+		}
 		String city = StringUtils.substring(input, idxOrt + 4, idxObjekt);
 		String objekt = StringUtils.substring(input, idxObjekt + 7, idxPlannummer);
 
@@ -174,6 +184,7 @@ public class ILSAnsbach implements IAlarmExtractor {
 
 		// Generate formatted output
 		String formatted = street.trim() + " " + house.trim() + System.lineSeparator();
+		formatted += StringUtils.isBlank(abschnitt) ? "" : (abschnitt.trim() + System.lineSeparator());
 		formatted += StringUtils.isBlank(objekt) ? "" : (objekt.trim() + System.lineSeparator());
 		formatted += postal.trim() + " " + city.trim();
 		String htmlFormatted = formatted.replaceAll(System.lineSeparator(), "<br/>");
