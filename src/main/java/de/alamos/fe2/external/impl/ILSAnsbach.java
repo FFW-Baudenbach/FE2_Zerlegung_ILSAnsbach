@@ -264,10 +264,40 @@ public class ILSAnsbach implements IAlarmExtractor {
 			allResources.add(unit);
 		}
 
+		allResources = sortResources(allResources);
+
 		resultMap.put(Parameter.EINSATZMITTEL_LISTE.getKey(), String.join(System.lineSeparator(), allResources));
 		resultMap.put(Parameter.EINSATZMITTEL_HTML.getKey(), generateResourcesAsHtml(allResources));
 
 		return resultMap;
+	}
+
+	/**
+	 * Sortiert die Einsatzmittel. Werden eigene Fahrzeuge gefunden, werden diese zuerst dargestellt.
+	 * @param resources Resources
+	 * @return sorted Resources
+	 */
+	private List<String> sortResources(final List<String> resources)
+	{
+		List<String> resourcesCopy = new ArrayList<>(resources);
+		List<String> result = new ArrayList<>();
+		for(String knownVehicle : _knownVehicles) {
+			int foundIdx = -1;
+			for (int i = 0; i < resourcesCopy.size(); i++) {
+				if (resourcesCopy.get(i).contains(knownVehicle)) {
+					foundIdx = i;
+					break;
+				}
+			}
+			if (foundIdx != -1) {
+				result.add(resourcesCopy.get(foundIdx));
+				resourcesCopy.remove(foundIdx);
+			}
+		}
+
+		result.addAll(resourcesCopy);
+
+		return result;
 	}
 
 	/**
@@ -278,7 +308,7 @@ public class ILSAnsbach implements IAlarmExtractor {
 	 * @param resources Liste von Einsatzmitteln
 	 * @return Einsatzmittel mit
 	 */
-	private String generateResourcesAsHtml(List<String> resources)
+	private String generateResourcesAsHtml(final List<String> resources)
 	{
 		StringBuilder builder = new StringBuilder();
 		builder.append("<ul>");
