@@ -264,9 +264,9 @@ public class ILSAnsbach implements IAlarmExtractor {
 			allResources.add(unit);
 		}
 
-		allResources = sortResources(allResources);
+		var allResourcesSorted = sortResources(allResources);
 
-		resultMap.put(Parameter.EINSATZMITTEL_LISTE.getKey(), String.join(System.lineSeparator(), allResources));
+		resultMap.put(Parameter.EINSATZMITTEL_LISTE.getKey(), String.join(System.lineSeparator(), allResourcesSorted));
 		resultMap.put(Parameter.EINSATZMITTEL_HTML.getKey(), generateResourcesAsHtml(allResources));
 
 		return resultMap;
